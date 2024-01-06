@@ -10,7 +10,7 @@ from database import productDB
 productDB.create_table()
 app = customtkinter.CTk()
 app.title('Inventory Management System')
-app.geometry('800x680')
+app.geometry('550x680')
 app.config(bg='#0A0B0C')
 app.resizable(False,False)
 
