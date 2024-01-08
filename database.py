@@ -1,6 +1,9 @@
 import sqlite3
 
 class productDB:
+    def __init__(self):
+        self.create_table()
+    
     def create_table():
         # Connect to the SQLite database
         connection = sqlite3.connect("Products.db")

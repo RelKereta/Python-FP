@@ -7,13 +7,14 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from database import productDB
 
-productDB.create_table()
+#Creating the base of the GUI.
 app = customtkinter.CTk()
 app.title('Inventory Management System')
 app.geometry('550x680')
 app.config(bg='#0A0B0C')
 app.resizable(False,False)
 
+#Making fonts.
 font1 = ('Arial', 25, 'bold')
 font2 = ('Arial', 18, 'bold')
 font3 = ('Arial', 13, 'bold')
