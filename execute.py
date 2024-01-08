@@ -31,7 +31,7 @@ def create_chart():
     ax = figure.add_subplot(111)
 
     # Create bar chart with product names and stock values
-    ax.bar(product_names, stock_values, width=0.4, color='#11EA05')
+    ax.bar(product_names, stock_values, width=0.4, color='#1E90FF')
 
     # Customize chart labels and title
     ax.set_xlabel('Product Name', color='#fff',fontsize= 10)
