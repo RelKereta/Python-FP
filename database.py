@@ -58,7 +58,7 @@ class productDB:
     def update_product(new_name, new_stock, id):
         connection = sqlite3.connect('Products.db')
         cursor = connection.cursor()
-        cursor.execute('UPDATE Products SET name = ?, in_stock = ?, WHERE id = ?', (new_name, new_stock, id))
+        cursor.execute('UPDATE Products SET name = ?, in_stock = ? WHERE id = ?', (new_name, new_stock, id))
 
         # Commit changes and close the connection
         connection.commit()

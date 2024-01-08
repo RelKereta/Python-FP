@@ -19,27 +19,44 @@ font2 = ('Arial', 18, 'bold')
 font3 = ('Arial', 13, 'bold')
 
 def create_chart():
+    # Fetch product details from DB
     product_details = productDB.fetch_products()
-    product_names = [product[1] for product in  product_details]
-    stock_values = [product[2] for product in  product_details]
+    
+    # Extract product names and stock values from details
+    product_names = [product[1] for product in product_details]
+    stock_values = [product[2] for product in product_details]
 
+    # Create figure and subplot for bar chart
     figure = Figure(figsize=(10, 3.8), dpi=80,facecolor='#0A0B0C')
     ax = figure.add_subplot(111)
+
+    # Create bar chart with product names and stock values
     ax.bar(product_names, stock_values, width=0.4, color='#11EA05')
+
+    # Customize chart labels and title
     ax.set_xlabel('Product Name', color='#fff',fontsize= 10)
     ax.set_ylabel('Stock Value', color='#fff', fontsize=10)
     ax.set_title('Product Stock Levels',color='#fff',fontsize=12)
+
+    # Customize tick parameters
     ax.tick_params(axis='y',labelcolor='#fff', labelsize=12)
     ax.tick_params(axis='x',labelcolor='#fff', labelsize=12)
+
+    # Set chart face color
     ax.set_facecolor('#1B181B')
 
+    # Create Tkinter canvas for chart display
     canvas = FigureCanvasTkAgg(figure)
     canvas.draw()
+
+    # Display chart in canvas widget
     canvas.get_tk_widget().grid(row=0, column=0, padx=0, pady=700)
 
 def display_data(event):
+    #Select row, populate inputs.
     selected_item = tree.focus()
     if selected_item:
+        #Get selected row values.
         row = tree.item(selected_item)['values']
         clear()
         id_entry.insert(0,row[0])
@@ -49,40 +66,70 @@ def display_data(event):
         pass
 
 def add_to_treeview():
+    #Add products to treeview.
     products = productDB.fetch_products()
     tree.delete(*tree.get_children())
+
     for product in products:
+        #Insert product into treeview.
         tree.insert('', END, values=product)
 
 def delete():
+    # Selecting item in treeview
     selected_item = tree.focus()
+    
+    # Checking if an item is selected
     if not selected_item:
         messagebox.showerror('Error', 'Choose a product to delete.')
     else:
-        id= id_entry.get()
+        # Getting the id of the selected product
+        id = id_entry.get()
+        
+        # Deleting the product from the database
         productDB.delete_product(id)
+        
+        # Refreshing treeview and clearing the input fields
         add_to_treeview()
         clear()
+        
+        # Recreating the chart with updated data
         create_chart()
+        
+        # Displaying a success message
         messagebox.showinfo('Success','Data has been deleted')
 
 def update():
+    # Fetch the selected item in the treeview
     selected_item = tree.focus()
+    
+    # Check if any item is selected
     if not selected_item:
+        # Display an error message if no item is selected
         messagebox.showerror('Error','Choose a product to update.')
     else:
+        # Get the input values
         id = id_entry.get()
         name = name_entry.get()
         stock = stock_entry.get()
+        
+        # Update the product in the database
         productDB.update_product(name, stock, id)
+        
+        # Add the updated product to the treeview
         add_to_treeview()
+        
+        # Clear the input fields
         clear()
+        
+        # Update the chart with the new data
         create_chart()
+        
+        # Display a success message
         messagebox.showinfo('Success','Data has been updated.')
 
 
-
 def clear(*clicked):
+    #Remove selected items, clear entries.
     if clicked:
         tree.selection_remove(tree.focus())
         tree.focus('')
@@ -91,25 +138,44 @@ def clear(*clicked):
     stock_entry.delete(0,END)
 
 def insert():
+    # Retrieve input data from Entry fields
     id = id_entry.get()
     name = name_entry.get()
     stock = stock_entry.get()
+
+    # Check if all fields are filled
     if not (id and name and stock):
         messagebox.showerror("Error", "Please fill all fields")
+
+    # Check if ID already exists in database
     elif productDB.id_exists(id):
         messagebox.showerror("Error","ID already exists! Please use a different ID.")
+
     else:
         try:
+            # Convert stock value to integer
             stock_value = int(stock)
+
+            # Insert product into database
             productDB.insert_product(id,name,stock_value)
+
+            # Update Treeview with new data
             add_to_treeview()
+
+            # Clear Entry fields
             clear()
+
+            # Create/update chart with new data
             create_chart()
+
+            # Show success message
             messagebox.showinfo('Success','Data has been inserted')
+
         except ValueError:
+            # Show error message if stock value is not an integer
             messagebox.showerror("Error","Stock must be an integer value")
 
-
+# Making the label and buttons in the UI
 title_label = customtkinter.CTkLabel(app,font=font1,text='Product Details',text_color='#fff',bg_color='#0A0B0C')
 title_label.place(x=35,y=15)
 
@@ -150,6 +216,8 @@ update_button.place(x=15,y=320)
 delete_button = customtkinter.CTkButton(frame, command=delete,font=font2,text_color='#fff',text='Delete',fg_color='#D20B02',hover_color='#A82A00',bg_color='#8F0600',cursor='hand2',corner_radius=8,width=80)
 delete_button.place(x=108,y=320)
 
+
+#Making the table
 style = ttk.Style(app)
 
 style.theme_use('clam')
